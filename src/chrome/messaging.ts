@@ -1,4 +1,4 @@
-import { Err, Ok, type Command, type Result } from '../core/types/common';
+import { Err, type Command, type Result } from '../core/types/common';
 
 export class ChromeMessaging {
   static async sendToBackground<T = unknown>(command: Command): Promise<Result<T>> {
@@ -7,7 +7,7 @@ export class ChromeMessaging {
         if (chrome.runtime.lastError) {
           resolve(Err(new Error(chrome.runtime.lastError.message)));
         } else {
-          resolve(Ok(response as T));
+          resolve(response as Result<T>);
         }
       });
     });
@@ -19,7 +19,7 @@ export class ChromeMessaging {
         if (chrome.runtime.lastError) {
           resolve(Err(new Error(chrome.runtime.lastError.message)));
         } else {
-          resolve(Ok(response as T));
+          resolve(response as Result<T>);
         }
       });
     });
