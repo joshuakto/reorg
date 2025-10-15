@@ -3,7 +3,7 @@
   "name": "LLM View Extractor",
   "version": "1.0.0",
   "description": "Extract and compare multiple views from any webpage using AI",
-  "permissions": ["activeTab", "storage", "scripting"],
+  "permissions": ["activeTab", "storage", "scripting", "tabs"],
   "host_permissions": ["https://api.anthropic.com/*"],
   "action": {
     "default_popup": "popup/popup.html",

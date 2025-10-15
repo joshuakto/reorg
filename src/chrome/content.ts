@@ -43,7 +43,7 @@ function getDOMStructure(): DOMStructure {
 ChromeMessaging.onMessage(async (command: Command) => {
   switch (command.type) {
     case 'GET_DOM_STRUCTURE':
-      return getDOMStructure();
+      return { success: true, data: getDOMStructure() };
 
     case 'EXECUTE_STRATEGY': {
       const extractor = ExtractorRegistry.get(command.strategy.extractorType);
