@@ -78,27 +78,39 @@ export class ManualEditor {
         top: 12px;
         left: 50%;
         transform: translateX(-50%);
-        background: #1b2733;
-        color: white;
+        background: rgba(15, 23, 42, 0.95);
+        color: #f8fafc;
         padding: 10px 16px;
         border-radius: 999px;
-        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+        box-shadow: 0 16px 32px rgba(15, 23, 42, 0.28);
         font-family: system-ui, -apple-system, 'Segoe UI', sans-serif;
         font-size: 14px;
         z-index: 2147483646;
         display: flex;
         align-items: center;
         gap: 12px;
+        backdrop-filter: blur(12px);
+      }
+
+      #llm-manual-hud strong {
+        font-weight: 700;
       }
 
       #llm-manual-hud button {
         background: #0b84ff;
-        color: white;
+        color: #f8fafc;
         border: none;
         border-radius: 999px;
         padding: 6px 12px;
         font-weight: 600;
         cursor: pointer;
+        transition: background-color 0.2s ease, transform 0.15s ease;
+      }
+
+      #llm-manual-hud button:hover,
+      #llm-manual-hud button:focus-visible {
+        background: #096dd9;
+        outline: none;
       }
 
       #llm-manual-editor {
@@ -106,10 +118,12 @@ export class ManualEditor {
         top: 60px;
         right: 20px;
         width: 280px;
-        background: white;
-        border-radius: 12px;
-        box-shadow: 0 12px 32px rgba(15, 23, 42, 0.2);
-        padding: 16px;
+        background: #ffffff;
+        color: #0f172a;
+        border-radius: 16px;
+        border: 1px solid rgba(15, 23, 42, 0.08);
+        box-shadow: 0 18px 40px rgba(15, 23, 42, 0.18);
+        padding: 18px;
         z-index: 2147483647;
         font-family: system-ui, -apple-system, 'Segoe UI', sans-serif;
       }
@@ -117,6 +131,17 @@ export class ManualEditor {
       #llm-manual-editor h3 {
         margin: 0 0 12px 0;
         font-size: 16px;
+        font-weight: 600;
+      }
+
+      #llm-manual-editor code {
+        font-family: 'JetBrains Mono', 'Fira Code', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas,
+          'Liberation Mono', 'Courier New', monospace;
+        font-size: 13px;
+        background: rgba(15, 23, 42, 0.08);
+        color: inherit;
+        padding: 2px 6px;
+        border-radius: 6px;
       }
 
       #llm-manual-editor label {
@@ -124,7 +149,7 @@ export class ManualEditor {
         font-size: 12px;
         font-weight: 600;
         margin-bottom: 4px;
-        color: #394867;
+        color: #1f2a44;
       }
 
       #llm-manual-editor input[type="text"],
@@ -132,11 +157,22 @@ export class ManualEditor {
       #llm-manual-editor textarea {
         width: 100%;
         margin-bottom: 12px;
-        padding: 8px;
-        border-radius: 6px;
-        border: 1px solid #d0d7e2;
+        padding: 8px 10px;
+        border-radius: 8px;
+        border: 1px solid rgba(148, 163, 184, 0.55);
         font-size: 13px;
         font-family: inherit;
+        background: #f8fafc;
+        color: #0f172a;
+        transition: border-color 0.2s ease, box-shadow 0.2s ease;
+      }
+
+      #llm-manual-editor input[type="text"]:focus-visible,
+      #llm-manual-editor input[type="number"]:focus-visible,
+      #llm-manual-editor textarea:focus-visible {
+        outline: none;
+        border-color: #0b84ff;
+        box-shadow: 0 0 0 2px rgba(11, 132, 255, 0.2);
       }
 
       #llm-manual-editor textarea {
@@ -152,21 +188,102 @@ export class ManualEditor {
 
       #llm-manual-editor button {
         flex: 1;
-        padding: 8px;
-        border-radius: 6px;
+        padding: 10px;
+        border-radius: 8px;
         border: none;
         cursor: pointer;
         font-weight: 600;
+        font-size: 13px;
+        transition: background-color 0.2s ease, transform 0.15s ease, color 0.2s ease;
       }
 
       #llm-manual-editor button.primary {
         background: #0b84ff;
-        color: white;
+        color: #f8fafc;
+      }
+
+      #llm-manual-editor button.primary:hover,
+      #llm-manual-editor button.primary:focus-visible {
+        background: #096dd9;
+        outline: none;
       }
 
       #llm-manual-editor button.secondary {
         background: #eff2f7;
         color: #1b2733;
+      }
+
+      #llm-manual-editor button.secondary:hover,
+      #llm-manual-editor button.secondary:focus-visible {
+        background: #dde4ef;
+        outline: none;
+      }
+
+      @media (prefers-color-scheme: dark) {
+        #llm-manual-hud {
+          background: rgba(15, 23, 42, 0.85);
+          color: #e2e8f0;
+          box-shadow: 0 20px 40px rgba(2, 6, 23, 0.6);
+        }
+
+        #llm-manual-hud button {
+          background: #3b82f6;
+          color: #f8fafc;
+        }
+
+        #llm-manual-hud button:hover,
+        #llm-manual-hud button:focus-visible {
+          background: #2563eb;
+        }
+
+        #llm-manual-editor {
+          background: rgba(15, 23, 42, 0.94);
+          color: #e2e8f0;
+          border: 1px solid rgba(148, 163, 184, 0.35);
+          box-shadow: 0 24px 48px rgba(2, 6, 23, 0.7);
+        }
+
+        #llm-manual-editor code {
+          background: rgba(30, 41, 59, 0.8);
+        }
+
+        #llm-manual-editor label {
+          color: #cbd5f5;
+        }
+
+        #llm-manual-editor input[type="text"],
+        #llm-manual-editor input[type="number"],
+        #llm-manual-editor textarea {
+          background: rgba(15, 23, 42, 0.7);
+          border: 1px solid rgba(148, 163, 184, 0.4);
+          color: #f8fafc;
+        }
+
+        #llm-manual-editor input[type="text"]:focus-visible,
+        #llm-manual-editor input[type="number"]:focus-visible,
+        #llm-manual-editor textarea:focus-visible {
+          border-color: #3b82f6;
+          box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.35);
+        }
+
+        #llm-manual-editor button.primary {
+          background: #3b82f6;
+        }
+
+        #llm-manual-editor button.primary:hover,
+        #llm-manual-editor button.primary:focus-visible {
+          background: #2563eb;
+        }
+
+        #llm-manual-editor button.secondary {
+          background: rgba(30, 41, 59, 0.8);
+          color: #e2e8f0;
+        }
+
+        #llm-manual-editor button.secondary:hover,
+        #llm-manual-editor button.secondary:focus-visible {
+          background: rgba(51, 65, 85, 0.8);
+        }
       }
     `;
     document.head.appendChild(style);
