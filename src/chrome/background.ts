@@ -7,9 +7,13 @@ import { config } from '../config';
 const llmProvider = new ClaudeProvider(config.llm.apiKey);
 const storageManager = new StorageManager();
 
+console.log('[Background] Service worker initialized');
+
 ChromeMessaging.onMessage(async (command) => {
+  console.log('[Background] Processing command:', command.type);
   switch (command.type) {
     case 'CAPTURE_PAGE': {
+      console.log('[Background] Capturing page for tab:', command.tabId);
       const tabId = command.tabId;
 
       const screenshot = await chrome.tabs.captureVisibleTab({ format: 'png' });
@@ -33,10 +37,12 @@ ChromeMessaging.onMessage(async (command) => {
         domStructure: domResult.data,
       };
 
+      console.log('[Background] Page captured successfully');
       return { success: true, data: context };
     }
 
     case 'GENERATE_STRATEGY': {
+      console.log('[Background] Generating strategy...');
       const strategyResult = await llmProvider.generateStrategy(command.context);
 
       if (!strategyResult.success) {
@@ -56,6 +62,7 @@ ChromeMessaging.onMessage(async (command) => {
         },
       });
 
+      console.log('[Background] Strategy generated successfully');
       return { success: true, data: strategyResult.data };
     }
 
@@ -67,6 +74,7 @@ ChromeMessaging.onMessage(async (command) => {
     }
 
     default:
+      console.warn('[Background] Unknown command:', command);
       return { success: false, error: 'Unknown command' satisfies string };
   }
 });

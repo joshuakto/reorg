@@ -11,7 +11,9 @@ export type Command =
   | { type: 'EXECUTE_STRATEGY'; strategy: ExtractionStrategy }
   | { type: 'DISPLAY_VIEWS'; views: View[] }
   | { type: 'SAVE_STRATEGY'; domain: string; strategy: StoredStrategy }
-  | { type: 'GET_DOM_STRUCTURE' };
+  | { type: 'GET_DOM_STRUCTURE' }
+  | { type: 'START_MANUAL_MODE' }
+  | { type: 'STOP_MANUAL_MODE' };
 
 import type { ExtractionStrategy } from './strategy';
 import type { PageContext, View } from './view';

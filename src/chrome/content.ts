@@ -1,5 +1,6 @@
 import { ChromeMessaging } from './messaging';
 import { ExtractorRegistry } from '../core/extractors/registry';
+import { ManualEditor } from '../core/manual/manual-editor';
 import { GridRenderer } from '../core/renderer/grid';
 import type { Command } from '../core/types/common';
 import type { DOMStructure } from '../core/types/view';
@@ -40,9 +41,14 @@ function getDOMStructure(): DOMStructure {
   };
 }
 
+console.log('[Content] Script loaded and message listener registered');
+
 ChromeMessaging.onMessage(async (command: Command) => {
+  console.log('[Content] Received command:', command.type);
+  
   switch (command.type) {
     case 'GET_DOM_STRUCTURE':
+      console.log('[Content] Returning DOM structure');
       return { success: true, data: getDOMStructure() };
 
     case 'EXECUTE_STRATEGY': {
@@ -63,7 +69,33 @@ ChromeMessaging.onMessage(async (command: Command) => {
       return { success: true, data: result.data };
     }
 
+    case 'START_MANUAL_MODE': {
+      console.log('[Content] Starting manual mode...');
+      const manual = getManualEditor();
+      const result = manual.start();
+      console.log('[Content] Manual mode start result:', result);
+      return result;
+    }
+
+    case 'STOP_MANUAL_MODE': {
+      console.log('[Content] Stopping manual mode...');
+      const manual = getManualEditor();
+      const result = manual.stop();
+      console.log('[Content] Manual mode stop result:', result);
+      return result;
+    }
+
     default:
+      console.warn('[Content] Unknown command:', command);
       return { success: false, error: 'Unknown command' };
   }
 });
+
+function getManualEditor(): ManualEditor {
+  if (!(window as typeof window & { __llmManualEditor?: ManualEditor }).__llmManualEditor) {
+    (window as typeof window & { __llmManualEditor: ManualEditor }).__llmManualEditor =
+      new ManualEditor();
+  }
+
+  return (window as typeof window & { __llmManualEditor: ManualEditor }).__llmManualEditor;
+}
