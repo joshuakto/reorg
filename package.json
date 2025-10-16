@@ -1,0 +1,22 @@
+{
+  "name": "llm-view-extractor",
+  "version": "1.0.0",
+  "description": "Chrome extension that lets you customize your view of a website.",
+  "type": "module",
+  "scripts": {
+    "dev": "vite build --watch --mode development",
+    "build": "vite build",
+    "type-check": "tsc --noEmit"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@types/chrome": "^0.1.24",
+    "typescript": "^5.9.3",
+    "vite": "^7.1.10"
+  },
+  "dependencies": {
+    "zod": "^4.1.12"
+  }
+}

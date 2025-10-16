@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="stylesheet" href="popup.css" />
+  </head>
+  <body>
+    <div class="container">
+      <h1>View Extractor</h1>
+
+      <div class="section">
+        <button id="generate-btn" class="primary-btn">Generate View Extractor</button>
+        <p class="help-text">Analyzes current page and creates multi-view extractor</p>
+      </div>
+
+      <div class="section">
+        <button id="execute-btn" class="secondary-btn" disabled>Execute Saved Strategy</button>
+        <p class="help-text" id="strategy-status">No saved strategy for this site</p>
+      </div>
+
+      <div id="loading" class="loading" style="display: none;">
+        <div class="spinner"></div>
+        <p>Generating strategy...</p>
+      </div>
+
+      <div id="error" class="error" style="display: none;"></div>
+    </div>
+
+    <script src="popup.ts" type="module"></script>
+  </body>
+</html>
