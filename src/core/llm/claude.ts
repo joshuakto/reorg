@@ -6,7 +6,20 @@ import type { PageContext } from '../types/view';
 import { ExtractionStrategySchema } from '../types/strategy';
 
 interface AnthropicMessageResponse {
-  content: Array<{ text: string }>;
+  id: string;
+  type: 'message';
+  role: 'assistant';
+  model: string;
+  content: Array<{
+    type: 'text';
+    text: string;
+  }>;
+  stop_reason: string | null;
+  stop_sequence: string | null;
+  usage: {
+    input_tokens: number;
+    output_tokens: number;
+  };
 }
 
 export class ClaudeProvider implements LLMProvider {
@@ -29,7 +42,7 @@ export class ClaudeProvider implements LLMProvider {
               role: 'user',
               content: [
                 {
-                  type: 'image',
+                  type: 'input_image',
                   source: {
                     type: 'base64',
                     media_type: 'image/png',
