@@ -3,6 +3,7 @@ import type { ManualLayoutSnapshot } from '../storage/schema';
 
 interface ElementSnapshot {
   text: string;
+  value: string | null;
   style: string | null;
   attributes: Record<string, string>;
   computed: Record<string, string>;
@@ -71,6 +72,7 @@ export class ManualEditor {
   private clickHandler = this.handleClick.bind(this);
   private keyHandler = this.handleKeyDown.bind(this);
   private resizeHandler = this.handleWindowResize.bind(this);
+  private scrollHandler = this.handleScroll.bind(this);
 
   start(): Result<void> {
     if (this.active) {
@@ -84,6 +86,7 @@ export class ManualEditor {
     document.addEventListener('mousemove', this.mouseMoveHandler, true);
     document.addEventListener('click', this.clickHandler, true);
     document.addEventListener('keydown', this.keyHandler, true);
+    document.addEventListener('scroll', this.scrollHandler, true);
     window.addEventListener('resize', this.resizeHandler);
 
     return Ok(undefined);
@@ -102,6 +105,7 @@ export class ManualEditor {
     document.removeEventListener('mousemove', this.mouseMoveHandler, true);
     document.removeEventListener('click', this.clickHandler, true);
     document.removeEventListener('keydown', this.keyHandler, true);
+    document.removeEventListener('scroll', this.scrollHandler, true);
     window.removeEventListener('resize', this.resizeHandler);
 
     this.highlightBox?.remove();
@@ -549,7 +553,11 @@ export class ManualEditor {
     const target = event.target as HTMLElement | null;
     if (!target || this.isManualUI(target)) {
       this.hoverElement = null;
-      this.highlightBox?.style.setProperty('display', 'none');
+      if (this.selectedElement) {
+        this.updateHighlight(this.selectedElement);
+      } else {
+        this.highlightBox?.style.setProperty('display', 'none');
+      }
       return;
     }
 
@@ -588,9 +596,14 @@ export class ManualEditor {
     const rect = element.getBoundingClientRect();
     const box = this.ensureHighlightBox();
 
+    if (rect.width === 0 && rect.height === 0) {
+      box.style.setProperty('display', 'none');
+      return;
+    }
+
     box.style.display = 'block';
-    box.style.top = `${rect.top + window.scrollY}px`;
-    box.style.left = `${rect.left + window.scrollX}px`;
+    box.style.top = `${rect.top}px`;
+    box.style.left = `${rect.left}px`;
     box.style.width = `${rect.width}px`;
     box.style.height = `${rect.height}px`;
   }
@@ -625,8 +638,14 @@ export class ManualEditor {
       attributes[attr.name] = attr.value;
     });
 
+    const value =
+      element instanceof HTMLInputElement || element instanceof HTMLTextAreaElement
+        ? element.value
+        : null;
+
     return {
       text: element.textContent ?? '',
+      value,
       style: element.getAttribute('style'),
       attributes,
       computed: computedMap,
@@ -1186,7 +1205,11 @@ export class ManualEditor {
       }
     };
 
-    setValue<HTMLTextAreaElement>('#llm-text', element.textContent ?? '');
+    const textValue =
+      element instanceof HTMLInputElement || element instanceof HTMLTextAreaElement
+        ? element.value
+        : element.textContent ?? '';
+    setValue<HTMLTextAreaElement>('#llm-text', textValue);
     setValue<HTMLInputElement>('#llm-attr-id', element.id ?? '');
     setValue<HTMLInputElement>('#llm-attr-class', Array.from(element.classList).join(' '));
     setValue<HTMLInputElement>('#llm-attr-title', element.getAttribute('title') ?? '');
@@ -1370,7 +1393,19 @@ export class ManualEditor {
       const id = target.id;
       switch (id) {
         case 'llm-text':
-          this.selectedElement.textContent = target.value;
+          if (this.selectedElement instanceof HTMLInputElement) {
+            this.selectedElement.value = target.value;
+            if (target.value) {
+              this.selectedElement.setAttribute('value', target.value);
+            } else {
+              this.selectedElement.removeAttribute('value');
+            }
+          } else if (this.selectedElement instanceof HTMLTextAreaElement) {
+            this.selectedElement.value = target.value;
+            this.selectedElement.textContent = target.value;
+          } else {
+            this.selectedElement.textContent = target.value;
+          }
           break;
         case 'llm-attr-id':
           this.selectedElement.id = target.value;
@@ -1590,7 +1625,17 @@ export class ManualEditor {
     if (!value) {
       return '';
     }
-    const numeric = parseFloat(value);
+    const normalized = value.trim();
+    if (!normalized) {
+      return '';
+    }
+
+    const match = normalized.match(/^(-?\d+(?:\.\d+)?)(?:px)?$/i);
+    if (!match) {
+      return '';
+    }
+
+    const numeric = Number.parseFloat(match[1]);
     return Number.isFinite(numeric) ? String(Math.round(numeric * 100) / 100) : '';
   }
 
@@ -1643,7 +1688,21 @@ export class ManualEditor {
       return;
     }
 
-    this.selectedElement.textContent = this.snapshot.text;
+    if (this.selectedElement instanceof HTMLInputElement) {
+      const value = this.snapshot.value ?? '';
+      this.selectedElement.value = value;
+      if (value) {
+        this.selectedElement.setAttribute('value', value);
+      } else {
+        this.selectedElement.removeAttribute('value');
+      }
+    } else if (this.selectedElement instanceof HTMLTextAreaElement) {
+      const value = this.snapshot.value ?? '';
+      this.selectedElement.value = value;
+      this.selectedElement.textContent = value;
+    } else {
+      this.selectedElement.textContent = this.snapshot.text;
+    }
 
     if (this.snapshot.style === null) {
       this.selectedElement.removeAttribute('style');
@@ -1737,6 +1796,22 @@ export class ManualEditor {
   private handleWindowResize(): void {
     if (this.editorPanel) {
       this.updatePanelFrame(this.editorPanel);
+    }
+
+    const target = this.hoverElement ?? this.selectedElement;
+    if (target) {
+      this.updateHighlight(target);
+    }
+  }
+
+  private handleScroll(): void {
+    if (!this.active) {
+      return;
+    }
+
+    const target = this.hoverElement ?? this.selectedElement;
+    if (target) {
+      this.updateHighlight(target);
     }
   }
 
