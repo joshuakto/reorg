@@ -85,6 +85,49 @@ ChromeMessaging.onMessage(async (command: Command) => {
       return result;
     }
 
+    case 'MANUAL_GET_STATE': {
+      const manual = getManualEditor();
+      return manual.getState();
+    }
+
+    case 'MANUAL_SET_TEXT': {
+      const manual = getManualEditor();
+      return manual.setText(command.value);
+    }
+
+    case 'MANUAL_SET_ATTRIBUTE': {
+      const manual = getManualEditor();
+      return manual.setAttribute(command.name, command.value);
+    }
+
+    case 'MANUAL_SET_STYLE': {
+      const manual = getManualEditor();
+      return manual.setStyle(command.property, command.value);
+    }
+
+    case 'MANUAL_SELECT_PARENT': {
+      const manual = getManualEditor();
+      return manual.selectParent();
+    }
+
+    case 'MANUAL_SELECT_CHILD': {
+      const manual = getManualEditor();
+      return manual.selectChild(command.index);
+    }
+
+    case 'MANUAL_RESET': {
+      const manual = getManualEditor();
+      return manual.reset();
+    }
+
+    case 'MANUAL_SAVE_LAYOUT': {
+      const manual = getManualEditor();
+      return manual.saveLayout();
+    }
+
+    case 'MANUAL_STATE_UPDATED':
+      return { success: true, data: undefined };
+
     default:
       console.warn('[Content] Unknown command:', command);
       return { success: false, error: 'Unknown command' };

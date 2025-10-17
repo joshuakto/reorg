@@ -87,6 +87,17 @@ ChromeMessaging.onMessage(async (command) => {
         : { success: false, error: result.error.message };
     }
 
+    case 'OPEN_SIDE_PANEL': {
+      if (chrome.sidePanel?.open) {
+        await chrome.sidePanel.open({ tabId: command.tabId });
+      }
+
+      return { success: true };
+    }
+
+    case 'MANUAL_STATE_UPDATED':
+      return { success: true };
+
     default:
       console.warn('[Background] Unknown command:', command);
       return { success: false, error: 'Unknown command' satisfies string };

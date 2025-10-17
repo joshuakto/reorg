@@ -127,6 +127,7 @@ document.getElementById('manual-mode-btn')?.addEventListener('click', async () =
     showError(result.error.message ?? 'Could not start manual mode.');
   } else {
     console.log('[Popup] Manual mode started successfully');
+    await ChromeMessaging.sendToBackground({ type: 'OPEN_SIDE_PANEL', tabId: tab.id });
     hideError();
     window.close();
   }

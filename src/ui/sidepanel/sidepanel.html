@@ -1,0 +1,220 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Manual Editor</title>
+    <link rel="stylesheet" href="./sidepanel.css" />
+  </head>
+  <body>
+    <main id="manual-app" data-theme="dark">
+      <header class="llm-editor-header">
+        <div class="llm-editor-title">
+          <span class="llm-editor-subtitle">Manual editor</span>
+          <strong id="llm-selected-descriptor">No element selected</strong>
+        </div>
+        <div class="llm-editor-actions">
+          <button type="button" class="ghost" id="llm-select-parent">Parent</button>
+          <button type="button" class="secondary" id="llm-reset">Reset</button>
+          <button type="button" class="primary" id="llm-save">Save layout</button>
+        </div>
+      </header>
+
+      <nav class="llm-editor-tabs" aria-label="Manual editor sections">
+        <button type="button" class="active" aria-pressed="true">Design</button>
+        <button type="button" disabled>Chat</button>
+        <button type="button" disabled>Changes</button>
+      </nav>
+
+      <section class="llm-editor-body" aria-live="polite">
+        <section class="llm-section" aria-labelledby="content-section-title">
+          <header id="content-section-title">Content</header>
+          <label>
+            Inner text
+            <textarea id="llm-text" placeholder="Edit text content"></textarea>
+          </label>
+          <div class="llm-grid cols-2">
+            <label>ID <input id="llm-attr-id" type="text" /></label>
+            <label>Class list <input id="llm-attr-class" type="text" /></label>
+            <label>Title <input id="llm-attr-title" type="text" /></label>
+            <label>ARIA label <input id="llm-attr-aria-label" type="text" /></label>
+          </div>
+        </section>
+
+        <section class="llm-section" aria-labelledby="typography-section-title">
+          <header id="typography-section-title">Typography</header>
+          <div class="llm-grid cols-2">
+            <label>Font family <input id="llm-font-family" type="text" /></label>
+            <label>
+              Font weight
+              <select id="llm-font-weight">
+                <option value="">Default</option>
+                <option value="300">Light</option>
+                <option value="400">Normal</option>
+                <option value="500">Medium</option>
+                <option value="600">Semibold</option>
+                <option value="700">Bold</option>
+                <option value="800">Extra bold</option>
+              </select>
+            </label>
+            <label>Font size (px) <input id="llm-font-size" type="number" min="6" max="200" step="1" /></label>
+            <label>Line height <input id="llm-line-height" type="number" min="0" max="10" step="0.1" /></label>
+            <label>Letter spacing (px) <input id="llm-letter-spacing" type="number" min="-20" max="20" step="0.5" /></label>
+            <label>
+              Text transform
+              <select id="llm-text-transform">
+                <option value="">Default</option>
+                <option value="uppercase">Uppercase</option>
+                <option value="lowercase">Lowercase</option>
+                <option value="capitalize">Capitalize</option>
+              </select>
+            </label>
+            <label>
+              Text align
+              <select id="llm-text-align">
+                <option value="">Default</option>
+                <option value="left">Left</option>
+                <option value="center">Center</option>
+                <option value="right">Right</option>
+                <option value="justify">Justify</option>
+              </select>
+            </label>
+          </div>
+        </section>
+
+        <section class="llm-section" aria-labelledby="color-section-title">
+          <header id="color-section-title">Color &amp; background</header>
+          <div class="llm-grid cols-2">
+            <label>Text color <input id="llm-text-color" type="color" /></label>
+            <label>Background color <input id="llm-bg-color" type="color" /></label>
+            <label>Border color <input id="llm-border-color" type="color" /></label>
+            <label>Background image <input id="llm-bg-image" type="text" /></label>
+            <label>Background size <input id="llm-bg-size" type="text" /></label>
+            <label>Background position <input id="llm-bg-position" type="text" /></label>
+          </div>
+          <label>
+            Element opacity
+            <input id="llm-opacity" type="range" min="0" max="1" step="0.05" />
+          </label>
+        </section>
+
+        <section class="llm-section" aria-labelledby="spacing-section-title">
+          <header id="spacing-section-title">Spacing</header>
+          <span class="llm-sublabel">Margin (px)</span>
+          <div class="llm-grid cols-4">
+            <label>Top <input id="llm-margin-top" type="number" min="-400" max="400" step="1" /></label>
+            <label>Right <input id="llm-margin-right" type="number" min="-400" max="400" step="1" /></label>
+            <label>Bottom <input id="llm-margin-bottom" type="number" min="-400" max="400" step="1" /></label>
+            <label>Left <input id="llm-margin-left" type="number" min="-400" max="400" step="1" /></label>
+          </div>
+          <span class="llm-sublabel">Padding (px)</span>
+          <div class="llm-grid cols-4">
+            <label>Top <input id="llm-padding-top" type="number" min="0" max="400" step="1" /></label>
+            <label>Right <input id="llm-padding-right" type="number" min="0" max="400" step="1" /></label>
+            <label>Bottom <input id="llm-padding-bottom" type="number" min="0" max="400" step="1" /></label>
+            <label>Left <input id="llm-padding-left" type="number" min="0" max="400" step="1" /></label>
+          </div>
+        </section>
+
+        <section class="llm-section" aria-labelledby="layout-section-title">
+          <header id="layout-section-title">Layout</header>
+          <div class="llm-grid cols-2">
+            <label>
+              Display
+              <select id="llm-display">
+                <option value="">Default</option>
+                <option value="block">Block</option>
+                <option value="inline-block">Inline block</option>
+                <option value="inline">Inline</option>
+                <option value="flex">Flex</option>
+                <option value="inline-flex">Inline flex</option>
+                <option value="grid">Grid</option>
+              </select>
+            </label>
+            <label>Gap (px) <input id="llm-gap" type="number" min="0" max="200" step="1" /></label>
+            <label>
+              Flex direction
+              <select id="llm-flex-direction">
+                <option value="">Default</option>
+                <option value="row">Row</option>
+                <option value="row-reverse">Row reverse</option>
+                <option value="column">Column</option>
+                <option value="column-reverse">Column reverse</option>
+              </select>
+            </label>
+            <label>
+              Justify content
+              <select id="llm-justify">
+                <option value="">Default</option>
+                <option value="flex-start">Start</option>
+                <option value="center">Center</option>
+                <option value="flex-end">End</option>
+                <option value="space-between">Space between</option>
+                <option value="space-around">Space around</option>
+                <option value="space-evenly">Space evenly</option>
+              </select>
+            </label>
+            <label>
+              Align items
+              <select id="llm-align">
+                <option value="">Default</option>
+                <option value="flex-start">Start</option>
+                <option value="center">Center</option>
+                <option value="flex-end">End</option>
+                <option value="stretch">Stretch</option>
+              </select>
+            </label>
+            <label>Width <input id="llm-width" type="text" /></label>
+            <label>Height <input id="llm-height" type="text" /></label>
+            <label>Max width <input id="llm-max-width" type="text" /></label>
+            <label>Max height <input id="llm-max-height" type="text" /></label>
+            <label>Min width <input id="llm-min-width" type="text" /></label>
+            <label>Min height <input id="llm-min-height" type="text" /></label>
+          </div>
+        </section>
+
+        <section class="llm-section" aria-labelledby="border-section-title">
+          <header id="border-section-title">Border</header>
+          <div class="llm-grid cols-2">
+            <label>Border width (px) <input id="llm-border-width" type="number" min="0" max="200" step="1" /></label>
+            <label>
+              Border style
+              <select id="llm-border-style">
+                <option value="">Default</option>
+                <option value="solid">Solid</option>
+                <option value="dashed">Dashed</option>
+                <option value="dotted">Dotted</option>
+                <option value="double">Double</option>
+              </select>
+            </label>
+            <label>Border radius (px) <input id="llm-border-radius" type="number" min="0" max="200" step="1" /></label>
+          </div>
+        </section>
+
+        <section class="llm-section" aria-labelledby="effects-section-title">
+          <header id="effects-section-title">Effects</header>
+          <label>
+            Box shadow
+            <textarea id="llm-box-shadow" placeholder="0 2px 12px rgba(15, 23, 42, 0.25)"></textarea>
+          </label>
+        </section>
+
+        <section class="llm-section" aria-labelledby="children-section-title">
+          <header id="children-section-title">Children</header>
+          <div id="llm-children" class="llm-children" aria-live="polite"></div>
+        </section>
+      </section>
+
+      <footer class="llm-footer">
+        <div class="llm-footer-row">
+          <span class="llm-footer-status" id="llm-status">Manual mode ready</span>
+        </div>
+        <div class="llm-footer-row">
+          <button type="button" class="secondary" id="llm-toggle-theme">Toggle theme</button>
+        </div>
+      </footer>
+    </main>
+
+    <script type="module" src="./sidepanel.ts"></script>
+  </body>
+</html>

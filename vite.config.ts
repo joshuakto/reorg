@@ -98,6 +98,7 @@ export default defineConfig(({ mode }) => {
       rollupOptions: {
         input: {
           'popup/popup': resolvePath(rootDir, 'src/ui/popup/popup.html'),
+          'sidepanel/sidepanel': resolvePath(rootDir, 'src/ui/sidepanel/sidepanel.html'),
         },
         output: {
           entryFileNames: '[name].js',
