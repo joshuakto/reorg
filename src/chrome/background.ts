@@ -73,6 +73,20 @@ ChromeMessaging.onMessage(async (command) => {
         : { success: false, error: result.error.message };
     }
 
+    case 'SAVE_MANUAL_LAYOUT': {
+      const result = await storageManager.saveManualLayout(command.layout);
+      return result.success
+        ? { success: true }
+        : { success: false, error: result.error.message };
+    }
+
+    case 'GET_MANUAL_LAYOUT': {
+      const result = await storageManager.getManualLayout(command.domain);
+      return result.success
+        ? { success: true, data: result.data }
+        : { success: false, error: result.error.message };
+    }
+
     default:
       console.warn('[Background] Unknown command:', command);
       return { success: false, error: 'Unknown command' satisfies string };

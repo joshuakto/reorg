@@ -20,10 +20,21 @@ async function init(): Promise<void> {
   const strategyResult = await storageManager.getStrategy(domain);
   const executeBtn = document.getElementById('execute-btn') as HTMLButtonElement | null;
   const statusText = document.getElementById('strategy-status');
+  const manualLayoutStatus = document.getElementById('manual-layout-status');
 
   if (strategyResult.success && strategyResult.data && statusText && executeBtn) {
     executeBtn.disabled = false;
     statusText.textContent = `Strategy available (used ${strategyResult.data.metadata.successCount} times)`;
+  }
+
+  const manualLayoutResult = await storageManager.getManualLayout(domain);
+  if (manualLayoutStatus) {
+    if (manualLayoutResult.success && manualLayoutResult.data) {
+      const savedAt = new Date(manualLayoutResult.data.capturedAt).toLocaleString();
+      manualLayoutStatus.textContent = `Manual layout saved on ${savedAt}. Launch manual mode to continue refining.`;
+    } else {
+      manualLayoutStatus.textContent = 'No manual layout saved yet';
+    }
   }
 
   if (!config.llm.apiKey) {

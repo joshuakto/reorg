@@ -12,3 +12,16 @@ export interface StoredStrategy {
     failureCount: number;
   };
 }
+
+export interface ManualLayoutSnapshot {
+  version: number;
+  domain: string;
+  url: string;
+  title: string;
+  html: string;
+  capturedAt: number;
+  viewport: {
+    width: number;
+    height: number;
+  };
+}

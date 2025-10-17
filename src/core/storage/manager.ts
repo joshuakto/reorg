@@ -1,5 +1,5 @@
 import { Err, Ok, type Result } from '../types/common';
-import type { StoredStrategy } from './schema';
+import type { ManualLayoutSnapshot, StoredStrategy } from './schema';
 
 export class StorageManager {
   private readonly storageArea: chrome.storage.StorageArea;
@@ -51,6 +51,25 @@ export class StorageManager {
         .filter(([key]) => key.startsWith('strategy:'))
         .map(([key, value]) => [key.replace('strategy:', ''), value] as [string, StoredStrategy]);
       return Ok(strategies);
+    } catch (error) {
+      return Err(error as Error);
+    }
+  }
+
+  async saveManualLayout(layout: ManualLayoutSnapshot): Promise<Result<void>> {
+    try {
+      await this.storageArea.set({ [`manual:${layout.domain}`]: layout });
+      return Ok(undefined);
+    } catch (error) {
+      return Err(error as Error);
+    }
+  }
+
+  async getManualLayout(domain: string): Promise<Result<ManualLayoutSnapshot | null>> {
+    try {
+      const result = await this.storageArea.get(`manual:${domain}`);
+      const layout = (result[`manual:${domain}`] as ManualLayoutSnapshot | undefined) ?? null;
+      return Ok(layout);
     } catch (error) {
       return Err(error as Error);
     }
